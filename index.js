@@ -2,7 +2,7 @@ import cors from 'cors'
 import 'dotenv/config'
 import express from 'express'
 import { getMe, login, register } from './controllers/UserController.js'
-import './mongo/connection.js' // Импортируем файл для подключения к MongoDB
+import './mongo/connection.js'
 import { checkAuth, handleValidationErrors } from './utils/index.js'
 import { loginValidation, registerValidation } from './validation.js'
 
