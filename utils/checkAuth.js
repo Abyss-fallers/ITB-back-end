@@ -1,24 +1,19 @@
 import jwt from 'jsonwebtoken'
+import { config } from '../config/index.js'
+import { AuthError, ForbiddenError } from '../errors/AppError.js'
 
-const { JWT_SECRET } = process.env
-
-export default (req, res, next) => {
+export default (req, _res, next) => {
   const token = (req.headers.authorization || '').replace(/Bearer\s?/, '')
 
   if (token) {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET)
-
+      const decoded = jwt.verify(token, config.jwt.secret)
       req.userId = decoded._id
       next()
-    } catch (e) {
-      return res.status(403).json({
-        message: 'Нет доступа',
-      })
+    } catch (err) {
+      next(new ForbiddenError('Нет доступа'))
     }
   } else {
-    return res.status(403).json({
-      message: 'Нет доступа',
-    })
+    next(new AuthError('Токен не предоставлен'))
   }
 }

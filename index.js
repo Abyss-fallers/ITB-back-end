@@ -1,26 +1,28 @@
 import cors from 'cors'
 import 'dotenv/config'
 import express from 'express'
-import { getMe, login, register } from './controllers/UserController.js'
-import './mongo/connection.js'
-import { checkAuth, handleValidationErrors } from './utils/index.js'
-import { loginValidation, registerValidation } from './validation.js'
+import { config } from './config/index.js' // Импорт конфигурации
+import { errorHandler } from './errors/errorHandler.js' // Обработчик ошибок
+import { configureHelmet } from './middlewares/securityMiddleware.js' // Импортируем настройки helmet
+import { connectDB } from './mongo/connection.js' // Подключение к базе данных
+import authRoutes from './routes/authRoutes.js' // Импорт маршрутов аутентификации
 
 const app = express()
 
+configureHelmet(app)
 app.use(express.json())
 app.use(cors())
 
-app.post('/auth/login', loginValidation, handleValidationErrors, login)
-app.post('/auth/register', registerValidation, handleValidationErrors, register)
-app.get('/auth/me', checkAuth, getMe)
+connectDB()
 
-const PORT = process.env.PORT || 4444
+app.use('/auth', authRoutes)
 
-app.listen(PORT, (err) => {
+app.use(errorHandler)
+
+app.listen(config.port, (err) => {
   if (err) {
-    return console.log(err)
+    console.error('Error starting server:', err)
+    return
   }
-
-  console.log(`Server OK on port ${PORT}`)
+  console.log(`Server running on port ${config.port}`)
 })
