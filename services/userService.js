@@ -5,7 +5,7 @@ import {
   ValidationError,
 } from '../errors/AppError.js'
 import UserModel from '../models/userSchema.js'
-import { generateToken } from '../utils/token.js'
+import { generateAccessToken, generateRefreshToken } from '../utils/token.js'
 import { validateRegistrationData } from '../validators/customValidators.js'
 
 export const registerUser = async (
@@ -23,7 +23,10 @@ export const registerUser = async (
     const user = new UserModel({ email, fullName, passwordHash: hash })
     await user.save()
 
-    return { user, token: generateToken(user._id) }
+    const accessToken = generateAccessToken(user._id)
+    const refreshToken = generateRefreshToken(user._id)
+
+    return { user, accessToken, refreshToken }
   } catch (err) {
     handleDBError(err)
   }
@@ -36,7 +39,10 @@ export const loginUser = async (email, password) => {
   const isValidPass = await user.comparePassword(password)
   if (!isValidPass) throw new AuthError('Неверный логин или пароль')
 
-  return { user, token: generateToken(user._id) }
+  const accessToken = generateAccessToken(user._id)
+  const refreshToken = generateRefreshToken(user._id)
+
+  return { user, accessToken, refreshToken }
 }
 
 export const getUserById = async (userId) => {

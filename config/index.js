@@ -10,7 +10,8 @@ const validateEnv = (envVars) => {
 
 validateEnv({
   DB_URL: 'DB_URL',
-  JWT_SECRET: 'JWT_SECRET',
+  JWT_ACCESS_SECRET: 'JWT_ACCESS_SECRET',
+  JWT_REFRESH_SECRET: 'JWT_REFRESH_SECRET',
 })
 
 export const config = {
@@ -19,10 +20,9 @@ export const config = {
     url: process.env.DB_URL,
   },
   jwt: {
-    secret: process.env.JWT_SECRET,
-    expiresIn: '90d',
-  },
-  log: {
-    level: process.env.LOG_LEVEL || 'info',
+    accessSecret: process.env.JWT_ACCESS_SECRET,
+    refreshSecret: process.env.JWT_REFRESH_SECRET,
+    accessExpiresIn: '15m',
+    refreshExpiresIn: '7d',
   },
 }

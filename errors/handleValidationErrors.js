@@ -7,7 +7,7 @@ const handleValidationErrors = (req, res, next) => {
     return res.status(400).json({
       status: 'error',
       statusCode: 400,
-      message: 'Ошибка валидации данных',
+      message: 'Слабый пароль',
       errors: errors.array(),
     })
   }
