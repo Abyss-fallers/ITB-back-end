@@ -15,7 +15,7 @@ validateEnv({
 })
 
 export const config = {
-  port: process.env.PORT || 4444,
+  port: process.env.PORT || 4445,
   db: {
     url: process.env.DB_URL,
   },
